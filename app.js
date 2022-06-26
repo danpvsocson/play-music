@@ -15,43 +15,43 @@ const app = {
             name: 'Nevada',
             singer: 'Vicetone',
             path: './assets/music/song1.mp3',
-            image: '/assets/img/song1.jpg'
+            image: './assets/img/song1.jpg'
         },
         {
             name: 'Summer-Time',
             singer: 'K-391',
             path: './assets/music/song2.mp3',
-            image: '/assets/img/song2.png'
+            image: './assets/img/song2.png'
         },
         {
             name: 'Monody',
             singer: 'TheFatRat',
             path: './assets/music/son3.mp3',
-            image: '/assets/img/song3.jpg'
+            image: './assets/img/song3.jpg'
         },
         {
             name: 'Reality',
             singer: 'Lost Frequencies',
             path: './assets/music/song4.mp3',
-            image: '/assets/img/song4.jpg'
+            image: './assets/img/song4.jpg'
         },
         {
             name: 'Vì Mẹ Bắt Chia Tay',
             singer: 'Miu Lê',
             path: './assets/music/song5.mp3',
-            image: '/assets/img/song5.jpg'
+            image: './assets/img/song5.jpg'
         },
         {
             name: 'Dế Vương',
             singer: 'ACV',
             path: './assets/music/song6.mp3',
-            image: '/assets/img/song6.jpg'
+            image: './assets/img/song6.jpg'
         },
         {
             name: 'Monody',
             singer: 'TheFatRat',
             path: './assets/music/song3.mp3',
-            image: '/assets/img/song3.jpg'
+            image: './assets/img/song3.jpg'
         },
         {
             name: 'Reality',
@@ -63,20 +63,20 @@ const app = {
             name: 'Vì Mẹ Bắt Chia Tay',
             singer: 'Miu Lê',
             path: './assets/music/song5.mp3',
-            image: '/assets/img/song5.jpg'
+            image: './assets/img/song5.jpg'
         },
         {
             name: 'Dế Vương',
             singer: 'ACV',
             path: './assets/music/song6.mp3',
-            image: '/assets/img/song6.jpg'
+            image: './assets/img/song6.jpg'
         }
     ],
     render: function () {
         const htmls = this.songs.map(function (song) {
             return `
                     <div class="song">
-                        <div class="thumb" style="background-image: url(.'${song.image}')"></div>
+                        <div class="thumb" style="background-image: url('${song.image}')"></div>
                         <div class="body">
                             <h3 class="title">${song.name}</h3>
                             <p class="author">${song.singer}</p>
@@ -98,13 +98,13 @@ const app = {
     },
     xuLySuKien: function () {
         //* XỦ lý Img song
-        const animate = imgSong.animate([
+        imgSong.animate([
             { transition: 'rotate(360deg)' } //Quay 360
         ]), {
             duration: 10000, // Quay trong 10s
             iterations: Infinity //Lặp vô hạn
         }
-        animate.pause()
+        // animate.pause()
         // * Xử lý cuộn
         const cdWidth = cd.offsetWidth
         document.onscroll = function () {
@@ -143,7 +143,7 @@ const app = {
     },
     loadSongNow: function () {
         heading.innerText = this.songNow.name
-        imgSong.style.backgroundImage = `url(.'${this.songNow.image}')`
+        imgSong.style.backgroundImage = `url('${this.songNow.image}')`
         audio.src = this.songNow.path
     },
 
