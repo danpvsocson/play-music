@@ -76,7 +76,7 @@ const app = {
         const htmls = this.songs.map(function (song) {
             return `
                     <div class="song">
-                        <div class="thumb" style="background-image: url('${song.image}')"></div>
+                        <div class="thumb" style="background-image: url(.'${song.image}')"></div>
                         <div class="body">
                             <h3 class="title">${song.name}</h3>
                             <p class="author">${song.singer}</p>
@@ -97,6 +97,14 @@ const app = {
         })
     },
     xuLySuKien: function () {
+        //* XỦ lý Img song
+        const animate = imgSong.animate([
+            { transition: 'rotate(360deg)' } //Quay 360
+        ]), {
+            duration: 10000, // Quay trong 10s
+            iterations: Infinity //Lặp vô hạn
+        }
+        animate.pause()
         // * Xử lý cuộn
         const cdWidth = cd.offsetWidth
         document.onscroll = function () {
@@ -125,7 +133,6 @@ const app = {
                 if(audio.duration){
                     const time = Math.floor(audio.currentTime / audio.duration * 100)
                     timeLoading.value = time
-
                 }
             }
             timeLoading.onchange = function (e) {
@@ -136,9 +143,10 @@ const app = {
     },
     loadSongNow: function () {
         heading.innerText = this.songNow.name
-        imgSong.style.backgroundImage = `url('${this.songNow.image}')`
+        imgSong.style.backgroundImage = `url(.'${this.songNow.image}')`
         audio.src = this.songNow.path
     },
+
     start: function () {
         // ? Định nghĩa các thuộc tính
         this.defineProperties()
