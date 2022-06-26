@@ -13,10 +13,12 @@ const btnRandom = $('.btn-random')
 const btnRepeat = $('.btn-repeat')
 const playIng = $('.player')
 const timeLoading = $('.progress')
+const SAVE_KEY = 'Music'
 const app = {
     random: false,
     repeat: false,
     songIndex: 0,
+    config: JSON.parse(localStorage.getItem('SAVE_KEY')) || {},
     songs: [
         {
             name: 'Nevada',
@@ -79,6 +81,10 @@ const app = {
             image: './assets/img/song6.jpg'
         }
     ],
+    setConfig: function (key, value) {
+        this.config[key] = value;
+        localStorage.setItem(SAVE_KEY, JSON.stringify(this.config));
+    },
     render: function () {
         const htmls = this.songs.map(function (song, index) {
             return `
@@ -175,16 +181,6 @@ const app = {
             play()
 
         }
-        // * Random Song
-        btnRandom.onclick = function () {
-            if (app.random) {
-                btnRandom.classList.remove('active')
-                app.random = false
-            } else {
-                btnRandom.classList.add('active')
-                app.random = true
-            }
-        }
         // * End Song
         audio.onended = function () {
             if (app.repeat) {
@@ -194,15 +190,18 @@ const app = {
             }
             play()
         }
+        // * Random Song
+        btnRandom.onclick = function () {
+            app.random = !app.random
+            app.setConfig('random', app.random)
+            btnRandom.classList.toggle('active', app.random)
+        }
         // * Repeat Song
         btnRepeat.onclick = function () {
-            if (app.repeat) {
-                btnRepeat.classList.remove('active')
-                app.repeat = false
-            } else {
-                btnRepeat.classList.add('active')
-                app.repeat = true
-            }
+            app.repeat = !app.repeat
+            app.setConfig('repeat', app.repeat)
+            btnRepeat.classList.toggle('active', app.repeat)
+
         }
         // * Selected Song
         songItems.onclick = function (e) {
@@ -217,7 +216,7 @@ const app = {
                 }
                 // * Click Option
                 if (e.target.closest('.option')) {
-                    console.log('Click Option');
+                    confirm('Tính Năng Đang Được Update')
                 }
             }   
         }
@@ -249,24 +248,28 @@ const app = {
         this.songIndex = newSongRandom
         this.loadSongNow()
     },
-    // song: function () {
-    //     songItems.forEach(function (songItem,index) {
-    //         this.songIndex = index
-    //         this.loadSongNow()
-    //     })
-    // },
+    loadConfig: function () {
+        app.random = app.config.random
+        app.repeat = app.config.repeat
+        
+    },
     start: function () {
+        // ? Tải Setting
+        this.loadConfig()
+
         // ? Định nghĩa các thuộc tính
         this.defineProperties()
-
+        
         // ? Xử lý các sự kiện
         this.xuLySuKien()
-
+        
         // ? Tải thông tin bài hát đầu tiên
         this.loadSongNow()
-
         // ? In ra dữ liệu bài hát
         this.render()
+        // btnRepeat.classList.toggle('active', this.repeat)
+        // btnRandom.classList.toggle('active', this.random)
+        
     }
 }
 app.start();
