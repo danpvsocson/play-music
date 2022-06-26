@@ -3,6 +3,7 @@ var $ = document.querySelector.bind(document);
 var $$ = document.querySelectorAll.bind(document);
 const heading = $('header h2')
 const imgSong = $('.cd-thumb')
+const songItems = $('.playlist')
 const audio = $('audio')
 const cd = $('.cd')
 const btnPlay = $('.btn-toggle-play')
@@ -79,9 +80,9 @@ const app = {
         }
     ],
     render: function () {
-        const htmls = this.songs.map(function (song) {
+        const htmls = this.songs.map(function (song, index) {
             return `
-                    <div class="song">
+                    <div data-index='${index}' class="song ${index == app.songIndex ? 'active' : ''}">
                         <div class="thumb" style="background-image: url('${song.image}')"></div>
                         <div class="body">
                             <h3 class="title">${song.name}</h3>
@@ -93,7 +94,7 @@ const app = {
                 </div>
                 `
         })
-        $('.playlist').innerHTML = htmls.join('')
+        songItems.innerHTML = htmls.join('')
     },
     defineProperties: function () {
         Object.defineProperty(this, 'songNow', {
@@ -103,7 +104,7 @@ const app = {
         })
     },
     xuLySuKien: function () {
-        function play () {
+        function play() {
             audio.onplay = function () {
                 checkPlayIng = true
                 playIng.classList.add('playing')
@@ -124,6 +125,7 @@ const app = {
                 const seekTime = audio.duration / 100 * e.target.value
                 audio.currentTime = seekTime
             }
+            app.render()
         }
         //* XỦ lý Img song
         const animate = imgSong.animate([
@@ -153,37 +155,71 @@ const app = {
         }
         // * Next song
         btnNext.onclick = function () {
-            if(app.random){
+            if (app.random) {
                 app.playRandomSong()
-            }else{
+            } else {
                 app.nextSong()
-            }
-            audio.play()
-            play()
-        }
-        // * Prev Song
-        btnPrev.onclick = function () {
-            if(app.random){
-                app.playRandomSong()
-            }else{
-                app.prevSong()
             }
             audio.play()
             play()
             
         }
+        // * Prev Song
+        btnPrev.onclick = function () {
+            if (app.random) {
+                app.playRandomSong()
+            } else {
+                app.prevSong()
+            }
+            audio.play()
+            play()
+
+        }
         // * Random Song
         btnRandom.onclick = function () {
-            if(app.random){
+            if (app.random) {
                 btnRandom.classList.remove('active')
                 app.random = false
-            }else{
+            } else {
                 btnRandom.classList.add('active')
                 app.random = true
             }
         }
+        // * End Song
+        audio.onended = function () {
+            if (app.repeat) {
+                audio.play()
+            } else {
+                btnNext.click()
+            }
+            play()
+        }
+        // * Repeat Song
         btnRepeat.onclick = function () {
-
+            if (app.repeat) {
+                btnRepeat.classList.remove('active')
+                app.repeat = false
+            } else {
+                btnRepeat.classList.add('active')
+                app.repeat = true
+            }
+        }
+        // * Selected Song
+        songItems.onclick = function (e) {
+            const songSelect = e.target.closest('.song:not(.active)')
+            if( songSelect || e.target.closest('.option')){
+                // * CLick on Song
+                if (songSelect) {
+                    app.songIndex = songSelect.getAttribute('data-index')
+                    app.loadSongNow()
+                    audio.play()
+                    play()
+                }
+                // * Click Option
+                if (e.target.closest('.option')) {
+                    console.log('Click Option');
+                }
+            }   
         }
     },
     loadSongNow: function () {
@@ -201,7 +237,7 @@ const app = {
     prevSong: function () {
         this.songIndex--
         if (this.songIndex < 0) {
-            this.songIndex = this.songs.length -1
+            this.songIndex = this.songs.length - 1
         }
         this.loadSongNow()
     },
@@ -213,6 +249,12 @@ const app = {
         this.songIndex = newSongRandom
         this.loadSongNow()
     },
+    // song: function () {
+    //     songItems.forEach(function (songItem,index) {
+    //         this.songIndex = index
+    //         this.loadSongNow()
+    //     })
+    // },
     start: function () {
         // ? Định nghĩa các thuộc tính
         this.defineProperties()
@@ -225,7 +267,6 @@ const app = {
 
         // ? In ra dữ liệu bài hát
         this.render()
-
     }
 }
 app.start();
